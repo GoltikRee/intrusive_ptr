@@ -80,7 +80,7 @@ public:
         return ptr > other.ptr;
     }
 
-    bool operator<(const intrusive_ptr<T> *other) const {
+    bool operator<(const intrusive_ptr<T> &other) const {
         return ptr < other.ptr;
     }
 
