@@ -33,8 +33,6 @@ protected:
     virtual ~ref_counter() = 0;
 };
 
-ref_counter::~ref_counter() = default;
-
 }
 
 #endif //IP_REF_COUNTER_HPP
