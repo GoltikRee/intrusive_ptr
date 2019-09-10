@@ -5,8 +5,9 @@
 #ifndef IP_INTRUSIVE_PTR_HPP
 #define IP_INTRUSIVE_PTR_HPP
 
-#include <exception>
 #include "ref_counter.hpp"
+
+#include <exception>
 
 // Check if RTTI is enabled
 #if defined(__clang__)
@@ -27,7 +28,7 @@ namespace ip {
 
 template<typename T>
 class intrusive_ptr {
-    static_assert(std::is_base_of_v<ref_counter, T>, "T is not derived from ref_counter");
+    //static_assert(std::is_base_of_v<ref_counter, T>, "T is not derived from ref_counter");
 public:
     intrusive_ptr() : ptr(nullptr) {}
 
@@ -95,7 +96,7 @@ public:
         return *this;
     }
 
-    intrusive_ptr<T> &operator=(const T *ptr) {
+    intrusive_ptr<T> &operator=(T *ptr) {
         intrusive_ptr<T>(ptr).swap(*this);
         return *this;
     }

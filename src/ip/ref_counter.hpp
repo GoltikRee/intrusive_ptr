@@ -5,6 +5,8 @@
 #ifndef IP_REF_COUNTER_HPP
 #define IP_REF_COUNTER_HPP
 
+#include <cstddef>
+
 namespace ip {
 
 class ref_counter {
@@ -32,6 +34,8 @@ protected:
     ref_counter() : refs(0) {}
     virtual ~ref_counter() = 0;
 };
+
+inline ip::ref_counter::~ref_counter() = default;
 
 }
 
