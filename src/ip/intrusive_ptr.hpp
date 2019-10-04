@@ -7,7 +7,7 @@
 
 #include "ref_counter.hpp"
 
-#include <exception>
+#include <stdexcept>
 
 // Check if RTTI is enabled
 #if defined(__clang__)
@@ -123,20 +123,20 @@ public:
 
     template<typename U>
     intrusive_ptr(const intrusive_ptr<U> &other) {
-        static_assert(std::is_base_of_v<U, T>, "T is not derived from U");
+        static_assert(std::is_base_of_v<U, T> || std::is_base_of_v<T, U>, "U and T not convertible");
 
-        if (!other.ptr) {
+        if (!other.get()) {
             ptr = nullptr;
             return;
         }
 
 #if defined(RTTI_ENABLED)
-        ptr = dynamic_cast<T *>(other.ptr);
+        ptr = dynamic_cast<T *>(other.get());
         if (!ptr) {
-            throw std::logic_error("Cannot cast subclass: only subclasses of class T can be casted");
+            throw std::runtime_error("Cannot convert U to T");
         }
 #else
-        ptr = static_cast<T *>(other.ptr);
+        ptr = static_cast<T *>(other.get());
 #endif
 
         ptr->add_ref();
@@ -144,7 +144,7 @@ public:
 
     template<typename U>
     intrusive_ptr(U *ptr) {
-        static_assert(std::is_base_of_v<U, T>, "T is not derived from U");
+        static_assert(std::is_base_of_v<U, T> || std::is_base_of_v<T, U>, "U and T not convertible");
 
         if (!ptr) {
             this->ptr = nullptr;
@@ -154,7 +154,7 @@ public:
 #if defined(RTTI_ENABLED)
         this->ptr = dynamic_cast<T *>(ptr);
         if (!this->ptr) {
-            throw std::logic_error("Cannot cast subclass: only subclasses of class T can be casted");
+            throw std::runtime_error("Cannot convert U to T");
         }
 #else
         this->ptr = static_cast<T *>(ptr);
